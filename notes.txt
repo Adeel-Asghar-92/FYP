@@ -1,0 +1,10 @@
+Registeration:
+First name,
+last name, Email,
+password,
+confirm password,
+gender
+class (dropdown),
+
+// student
+// fee

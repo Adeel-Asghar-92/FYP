@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./register.css";
+import axios from "axios";
+import { baseRoute } from "../../utils/baseRoute";
 
 function AdminLoginScreen() {
   // State variables to store form data
@@ -18,9 +20,13 @@ function AdminLoginScreen() {
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Add your login logic here
-    console.log("Login data submitted:", formData);
-    // You can send this data to your server for authentication
+    axios({
+      method: "post",
+      url: baseRoute + "auth/sign-up",
+      data: formData,
+    })
+      .then((res) => {})
+      .catch(() => {});
   };
 
   return (

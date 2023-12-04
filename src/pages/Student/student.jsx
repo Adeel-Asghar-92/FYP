@@ -12,6 +12,7 @@ import { baseURL } from "../../utils/baseRoute.js";
 
 // const [activeItem, setActiveItem] = useState("home"); // Initialize "home" as the active item
 const Users = ({ activeItem, setActiveItem }) => {
+  const [studentDetail, setStudentDetail] = useState({});
   const [student, setStudent] = useState([
     {
       studentId: "13912999",
@@ -154,6 +155,7 @@ const Users = ({ activeItem, setActiveItem }) => {
                           width={24}
                           height={24}
                           data-bs-target="#studentBackdrop"
+                          onClick={() => setStudentDetail(x)}
                           data-bs-toggle="modal"
                         />
                         <img
@@ -174,7 +176,10 @@ const Users = ({ activeItem, setActiveItem }) => {
         </div>
         {/* <div class="modal-dialog modal-dialog-scrollable" id="staticBackdrop"> */}
         <FeeDialog feeByMonth={feeByMonth} />
-        <StudentDialog feeByMonth={feeByMonth} />
+
+        {studentDetail?.firstName && (
+          <StudentDialog studentDetail={studentDetail} />
+        )}
         <FilterDialog feeByMonth={feeByMonth} />
         {/* </div> */}
       </div>

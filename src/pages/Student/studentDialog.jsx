@@ -1,8 +1,8 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { baseURL } from "../../utils/baseRoute";
-const StudentDialog = ({ feeByMonth }) => {
+const StudentDialog = ({ studentDetail }) => {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -12,6 +12,13 @@ const StudentDialog = ({ feeByMonth }) => {
     grade: "",
     gender: "other",
   });
+  console.log("studentDetail", studentDetail);
+  useEffect(() => {
+    if (studentDetail.firstName) {
+      setFormData(studentDetail);
+    }
+  }, []);
+
   const history = useHistory();
   const handleChange = (e) => {
     const { name, value } = e.target;

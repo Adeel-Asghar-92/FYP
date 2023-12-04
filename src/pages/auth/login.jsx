@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./register.css";
 import axios from "axios";
-import { baseRoute } from "../../utils/baseRoute";
-
+import { baseURL } from "../../utils/baseRoute";
+import { useHistory } from "react-router-dom";
 function AdminLoginScreen() {
   // State variables to store form data
   const [formData, setFormData] = useState({
@@ -11,6 +11,7 @@ function AdminLoginScreen() {
     password: "",
   });
 
+  const history = useHistory();
   // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,11 +23,17 @@ function AdminLoginScreen() {
     e.preventDefault();
     axios({
       method: "post",
-      url: baseRoute + "auth/sign-up",
+      url: baseURL + "auth/sign-in",
       data: formData,
     })
-      .then((res) => {})
-      .catch(() => {});
+      .then(({ data }) => {
+        const token = data.data.accessToken;
+        localStorage.setItem("accessToken", token);
+        history.push("/admin/students");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (

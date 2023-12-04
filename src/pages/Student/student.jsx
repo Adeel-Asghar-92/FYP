@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SideBar from "../../components/Sidebar/sidebar";
 import View from "../../images/view.png";
 import Edit from "../../images/edit.png";
@@ -7,6 +7,8 @@ import NavBar from "../../components/NavBar/navbar";
 import FeeDialog from "./feeDialog.jsx";
 import StudentDialog from "./studentDialog.jsx";
 import FilterDialog from "./filter";
+import axios from "axios";
+import { baseURL } from "../../utils/baseRoute.js";
 
 // const [activeItem, setActiveItem] = useState("home"); // Initialize "home" as the active item
 const Users = ({ activeItem, setActiveItem }) => {
@@ -41,6 +43,25 @@ const Users = ({ activeItem, setActiveItem }) => {
     { month: "December", fee: 0 },
   ]);
 
+  useEffect(() => {
+    axios({
+      method: "post",
+      url: baseURL + "student/generateReport",
+      data: {
+        grade: "",
+        status: "",
+        month: "",
+      },
+    })
+      .then(({ data }) => {
+        console.log(data.data.students);
+        setStudent(data.data.students);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
   return (
     <>
       <div className="container-fluid">
@@ -67,13 +88,13 @@ const Users = ({ activeItem, setActiveItem }) => {
               </div>
               <div className="row mb-3 mt-5">
                 <div className="col">
-                  <input
+                  {/* <input
                     type="search"
                     name="search"
                     id=""
                     className="form-control form-control-md"
                     placeholder="Search by ID, Name, Email... "
-                  />
+                  /> */}
                 </div>
                 <div className="col text-end ">
                   {/* <button
@@ -101,7 +122,7 @@ const Users = ({ activeItem, setActiveItem }) => {
                     <th scope="col">Student ID</th>
                     <th scope="col">Name</th>
                     <th scope="col">Class</th>
-                    <th scope="col">Is Active</th>
+                    {/* <th scope="col">Is Active</th> */}
                     <th scope="col">Balance</th>
                     <th className="text-center" scope="col">
                       Action
@@ -113,9 +134,9 @@ const Users = ({ activeItem, setActiveItem }) => {
                   {student.map((x) => (
                     <tr className="align-middle">
                       <th scope="row">{x.studentId}</th>
-                      <td>{x.name}</td>
-                      <td>{x.class}</td>
-                      <td>{x.isActive ? "True" : "False"}</td>
+                      <td>{x.firstName + x.lastName}</td>
+                      <td>{x.grade}</td>
+                      {/* <td>{x.isActive ? "True" : "False"}</td> */}
                       <td>{x.balance}</td>
                       <td className="text-center">
                         {/* <img

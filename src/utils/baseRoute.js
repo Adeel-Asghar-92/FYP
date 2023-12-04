@@ -1,1 +1,1 @@
-export const baseRoute = "https://feeautomation-server-w2lm.vercel.app/api/";
+export const baseURL = "https://feeautomation-server-w2lm.vercel.app/api/";

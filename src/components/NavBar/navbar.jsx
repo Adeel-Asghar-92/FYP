@@ -1,5 +1,9 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
+
 const NavBar = () => {
+  const history = useHistory();
+
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container-fluid">
@@ -48,7 +52,13 @@ const NavBar = () => {
               placeholder="Search"
               aria-label="Search"
             /> */}
-            <button className="btn btn-outline-success" type="submit">
+            <button
+              className="btn btn-outline-success"
+              onClick={() => {
+                localStorage.removeItem("accessToken");
+                history.push("/student/login");
+              }}
+            >
               Logout
             </button>
           </form>

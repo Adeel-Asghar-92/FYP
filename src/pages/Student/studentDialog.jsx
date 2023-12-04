@@ -1,5 +1,45 @@
-import React from "react";
+import axios from "axios";
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
+import { baseURL } from "../../utils/baseRoute";
 const StudentDialog = ({ feeByMonth }) => {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    grade: "",
+    gender: "other",
+  });
+  const history = useHistory();
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+  const handleGenderChange = (e) => {
+    const { id } = e.target;
+    setFormData({ ...formData, gender: id });
+  };
+
+  const handleSubmit = (e) => {
+    debugger;
+    e.preventDefault();
+    axios({
+      method: "post",
+      url: baseURL + "auth/sign-up",
+      data: formData,
+    })
+      .then(({ data }) => {
+        const token = data.data.accessToken;
+        // localStorage.setItem("accessToken", token);
+        // history.push("/student/account-book");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
     <div
       class="modal fade"
@@ -23,130 +63,165 @@ const StudentDialog = ({ feeByMonth }) => {
               aria-label="Close"
             ></button>
           </div>
-          <div class="modal-body">
-            <div className="mt-2">
-              <label className="form-label" for="form3Example1m">
-                First name
-              </label>
-              <div className="form-outline">
-                <input
-                  type="text"
-                  id="form3Example1m"
-                  className="form-control form-control-sm"
-                />
-              </div>
-            </div>
-            <div className="mt-2">
-              <label className="form-label" for="form3Example1m">
-                Last name
-              </label>
-              <div className="form-outline">
-                <input
-                  type="text"
-                  id="form3Example1m"
-                  className="form-control form-control-sm"
-                />
-              </div>
-            </div>
-            <div className="mt-2">
-              <label className="form-label" for="form3Example1n">
-                Gender:
-              </label>
-              <div className="d-md-flex justify-content-start align-items-center mb-4 py-2">
-                <div className="form-check form-check-inline mb-0 me-4">
+          <form onSubmit={handleSubmit}>
+            <div class="modal-body">
+              <div className="mt-2">
+                <label className="form-label" for="form3Example1m">
+                  First name
+                </label>
+                <div className="form-outline">
                   <input
-                    className="form-check-input"
-                    type="radio"
-                    name="inlineRadioOptions"
-                    id="femaleGender"
-                    value="option1"
+                    type="text"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    id="form3Example1m"
+                    required
+                    className="form-control form-control-sm"
                   />
-                  <label className="form-check-label" for="femaleGender">
-                    Female
-                  </label>
                 </div>
+              </div>
+              <div className="mt-2">
+                <label className="form-label" for="form3Example1m">
+                  Last name
+                </label>
+                <div className="form-outline">
+                  <input
+                    type="text"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    id="form3Example1n"
+                    required
+                    className="form-control form-control-sm"
+                  />
+                </div>
+              </div>
 
-                <div className="form-check form-check-inline mb-0 me-4">
-                  <input
-                    className="form-check-input"
-                    type="radio"
-                    name="inlineRadioOptions"
-                    id="maleGender"
-                    value="option2"
-                  />
-                  <label className="form-check-label" for="maleGender">
-                    Male
-                  </label>
-                </div>
+              <div className="mt-2">
+                <label className="form-label" for="form3Example1n">
+                  Gender:
+                </label>
+                <div className="d-md-flex justify-content-start align-items-center mb-4 py-2">
+                  <div className="form-check form-check-inline mb-0 me-4">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="inlineRadioOptions"
+                      id="female"
+                      value=""
+                      checked={formData.gender === "female"}
+                      onChange={handleGenderChange}
+                    />
+                    <label className="form-check-label" for="female">
+                      Female
+                    </label>
+                  </div>
 
-                <div className="form-check form-check-inline mb-0">
+                  <div className="form-check form-check-inline mb-0 me-4">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="inlineRadioOptions"
+                      id="male"
+                      value=""
+                      checked={formData.gender === "male"}
+                      onChange={handleGenderChange}
+                    />
+                    <label className="form-check-label" for="male">
+                      Male
+                    </label>
+                  </div>
+
+                  <div className="form-check form-check-inline mb-0">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="inlineRadioOptions"
+                      id="other"
+                      value=""
+                      checked={formData.gender === "other"}
+                      onChange={handleGenderChange}
+                    />
+                    <label className="form-check-label" for="other">
+                      Other
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-2">
+                <label className="form-label" for="form3Example1m">
+                  Email
+                </label>
+                <div className="form-outline">
                   <input
-                    className="form-check-input"
-                    type="radio"
-                    name="inlineRadioOptions"
-                    id="otherGender"
-                    value="option3"
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    id="form3Example1n"
+                    required
+                    className="form-control form-control-sm"
                   />
-                  <label className="form-check-label" for="otherGender">
-                    Other
-                  </label>
+                </div>
+              </div>
+              <div className="mt-2">
+                <label className="form-label" for="form3Example1n">
+                  Select Grade
+                </label>
+                <select
+                  className="form-select"
+                  aria-label="Default select example"
+                  name="grade"
+                  onChange={handleChange}
+                  value={formData.grade}
+                >
+                  <option disabled value="">
+                    Select Grade
+                  </option>
+                  <option value="11">11</option>
+                  <option value="12">12</option>
+                  <option value="13">13</option>
+                  <option value="14">14</option>
+                  <option value="15">15</option>
+                  <option value="16">16</option>
+                </select>
+              </div>
+              <div className="mt-2">
+                <label className="form-label" for="form3Example1m">
+                  Password
+                </label>
+                <div className="form-outline">
+                  <input
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    id="form3Example1n"
+                    required
+                    className="form-control form-control-sm"
+                  />
                 </div>
               </div>
             </div>
-            <div className="mt-2">
-              <label className="form-label" for="form3Example1m">
-                Email
-              </label>
-              <div className="form-outline">
-                <input
-                  type="text"
-                  id="form3Example1m"
-                  className="form-control form-control-sm"
-                />
-              </div>
-            </div>
-            <div className="mt-2">
-              <label className="form-label" for="form3Example1n">
-                Select class
-              </label>
-              <select
-                className="form-select"
-                aria-label="Default select example"
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
               >
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-              </select>
+                Close
+              </button>
+              <button
+                type="submit"
+                class="btn btn-primary"
+                data-bs-dismiss="modal"
+              >
+                Save changes
+              </button>
             </div>
-            <div className="mt-2">
-              <label className="form-label" for="form3Example1m">
-                Scolarship/Discount
-              </label>
-              <div className="form-outline">
-                <input
-                  type="number"
-                  id="form3Example1m"
-                  className="form-control form-control-sm"
-                />
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
-            <button
-              type="button"
-              class="btn btn-primary"
-              data-bs-dismiss="modal"
-            >
-              Save changes
-            </button>
-          </div>
+          </form>
         </div>
       </div>
     </div>

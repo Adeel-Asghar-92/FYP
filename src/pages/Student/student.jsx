@@ -137,7 +137,10 @@ const Users = ({ activeItem, setActiveItem }) => {
                       <td>{x.firstName + x.lastName}</td>
                       <td>{x.grade}</td>
                       {/* <td>{x.isActive ? "True" : "False"}</td> */}
-                      <td>{x.balance}</td>
+                      <td>
+                        {Number(x.totalPaidAmount) -
+                          Number(x.totalPayableAmount)}
+                      </td>
                       <td className="text-center">
                         {/* <img
                           title="View Detail"

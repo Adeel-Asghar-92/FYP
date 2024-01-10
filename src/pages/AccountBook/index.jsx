@@ -1,32 +1,46 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SideBar from "../../components/Sidebar/sidebar";
 import Printer from "../../images/printer.png";
 import NavBar from "../../components/NavBar/navbar";
+import axios from "axios";
+import { baseURL } from "../../utils/baseRoute";
 const AccountBook = () => {
-  const [fees, setFees] = useState([
-    {
-      challanNo: "13912999",
-      challanType: "Full Semester",
-      payable: "10500",
-      paid: "11500",
-      balance: "0",
-      dueDate: "Apr 11, 2022",
-      paidDate: "Apr 12, 2022",
-      paymentMode: "HBL",
-      action: "Paid",
-    },
-    {
-      challanNo: "13912000",
-      challanType: "Misc",
-      payable: "2000",
-      paid: "0",
-      balance: "-2000",
-      dueDate: "Apr 11, 2022",
-      paidDate: "UnPaid",
-      paymentMode: "",
-      action: "UnPaid",
-    },
-  ]);
+  const [fees, setFees] = useState([]);
+  const [totalBalance, setTotalBalance] = useState(0);
+  useEffect(() => {
+    axios({
+      method: "post",
+      url: baseURL + "auth/getStudentsByEmail",
+      data: {
+        email: localStorage.getItem("email"),
+      },
+    })
+      .then(({ data }) => {
+        console.log(data.data.students);
+        const filtered = data.data.student.feeAccount.filter(
+          (x) => Number(x.payableAmount) > 0
+        );
+        function calculateTotalBalance(data) {
+          let totalBalancee = 0;
+
+          data.forEach((entry) => {
+            const balance =
+              Number(entry.payableAmount) -
+              Number(entry.discount) -
+              Number(entry.paidAmount);
+            totalBalancee += balance;
+          });
+
+          return totalBalancee;
+        }
+        const totalBalancee = calculateTotalBalance(filtered);
+        setTotalBalance(totalBalancee);
+        setFees(filtered);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
   return (
     <>
       <div className="container-fluid">
@@ -42,29 +56,29 @@ const AccountBook = () => {
               <table className="table table-bordered table-hover">
                 <thead className="table-secondary border-white">
                   <tr>
-                    <th scope="col">Challan No.</th>
-                    <th scope="col">Challan Type</th>
+                    <th scope="col">Voucher No.</th>
                     <th scope="col">Payable</th>
                     <th scope="col">Paid</th>
                     <th scope="col">Balance</th>
                     <th scope="col">Date</th>
-                    <th scope="col">Payment Mode</th>
                     <th scope="col">Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   {fees.map((x) => (
                     <tr className="align-middle">
-                      <th scope="row">{x.challanNo}</th>
-                      <td>{x.challanType}</td>
-                      <td>{x.payable}</td>
-                      <td>{x.paid}</td>
-                      <td>{x.balance}</td>
+                      <th scope="row">{x.voucherId}</th>
+                      <td>{Number(x.payableAmount) - Number(x.discount)}</td>
+                      <td>{x.paidAmount}</td>
                       <td>
-                        <p>Due Date:{x.dueDate} </p>
-                        <p>Paid Date:{x.paidDate}</p>
+                        {Number(x.payableAmount) -
+                          Number(x.discount) -
+                          Number(x.paidAmount)}
                       </td>
-                      <td>{x.paymentMode}</td>
+                      <td>
+                        <p>Due Date:{x.dueDate.slice(0, 10)} </p>
+                        <p>Paid Date:{x?.paidDate?.slice(0, 10)}</p>
+                      </td>
                       <td className="text-center">
                         <img src={Printer} width={30} height={30} />
                       </td>
@@ -75,7 +89,7 @@ const AccountBook = () => {
               <h6>
                 {" "}
                 Total Payable Amount:{" "}
-                <span className="text-primary">2,000.00</span>
+                <span className="text-primary">{totalBalance}</span>
               </h6>
             </div>
           </div>

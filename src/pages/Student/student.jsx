@@ -13,22 +13,7 @@ import { baseURL } from "../../utils/baseRoute.js";
 // const [activeItem, setActiveItem] = useState("home"); // Initialize "home" as the active item
 const Users = ({ activeItem, setActiveItem }) => {
   const [studentDetail, setStudentDetail] = useState({});
-  const [student, setStudent] = useState([
-    {
-      studentId: "13912999",
-      name: "Adeel Asghar",
-      class: "2",
-      isActive: true,
-      balance: "0",
-    },
-    {
-      studentId: "13912000",
-      name: "Ahssan Sadique",
-      class: "2",
-      isActive: true,
-      balance: "-2000",
-    },
-  ]);
+  const [student, setStudent] = useState([]);
   const [feeByMonth, setFeeByMonth] = useState([
     { month: "January", fee: 0 },
     { month: "February", fee: 0 },
@@ -63,57 +48,55 @@ const Users = ({ activeItem, setActiveItem }) => {
       });
   }, []);
 
+  const feeChangeHandler = ({ name, value, id }) => {
+    studentDetail.feeAccount.find((x) => x._id === id)[name] = value.toString();
+    if (name === "payableAmount" && Number(value) > 0) {
+      studentDetail.feeAccount.find((x) => x._id === id)["paidDate"] =
+        new Date();
+    } else if (name === "payableAmount") {
+      studentDetail.feeAccount.find((x) => x._id === id)["paidDate"] = "";
+    }
+    const str = JSON.stringify(studentDetail);
+    const parse = JSON.parse(str);
+    setStudentDetail((studentDetail) => ({
+      ...studentDetail,
+      feeAccount: parse.feeAccount,
+    }));
+  };
+
+  const feeSubmitHandler = (e) => {
+    e.preventDefault();
+    axios({
+      method: "post",
+      url: baseURL + "student/updateFeeAccount",
+      data: { userId: studentDetail._id, feeAccount: studentDetail.feeAccount },
+    })
+      .then(({ data }) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   return (
     <>
-      <div className="container-fluid">
-        <div className="row">
-          <div className="col-12 col-md-2 p-0">
-            <SideBar activeItem={activeItem} setActiveItem={setActiveItem} />
-          </div>
-          <div className="col-12 col-md-9 mt-3">
-            {/* <div className="col-12 col-md-12 mt-3"> */}
-            <div className="d:flex justify-content-between">
-              <div className="row">
-                <div className="col">
-                  <h2>Students</h2>
-                </div>
-                <div className="col text-end">
-                  {/* <button
-                    className="btn btn-primary"
-                    data-bs-target="#studentBackdrop"
-                    data-bs-toggle="modal"
-                  >
-                    Add Students
-                  </button> */}
-                </div>
-              </div>
-              <div className="row mb-3 mt-5">
-                <div className="col">
-                  {/* <input
-                    type="search"
-                    name="search"
-                    id=""
-                    className="form-control form-control-md"
-                    placeholder="Search by ID, Name, Email... "
-                  /> */}
-                </div>
-                <div className="col text-end ">
-                  {/* <button
-                    className="btn btn-primary m-2"
-                    data-bs-target="#filterBackdrop"
-                    data-bs-toggle="modal"
-                  >
-                    Apply Filter
-                  </button> */}
-                  <button
-                    className="btn btn-primary"
-                    data-bs-target="#studentBackdrop"
-                    data-bs-toggle="modal"
-                  >
-                    Add Students
-                  </button>
-                </div>
-              </div>
+      <div>
+        <div
+          style={{
+            display: "flex",
+          }}
+        >
+          <SideBar activeItem={activeItem} setActiveItem={setActiveItem} />
+          <div style={{ flex: "1", padding: "10px" }}>
+            <h2>Students</h2>
+            <div style={{ display: "flex", flexDirection: "row-reverse" }}>
+              <button
+                className="btn btn-primary"
+                data-bs-target="#studentBackdrop"
+                data-bs-toggle="modal"
+              >
+                Add Students
+              </button>
             </div>
 
             <div className="table-responsive">
@@ -163,6 +146,7 @@ const Users = ({ activeItem, setActiveItem }) => {
                           src={FeeIcon}
                           width={24}
                           height={24}
+                          onClick={() => setStudentDetail(x)}
                           data-bs-target="#feeBackdrop"
                           data-bs-toggle="modal"
                         />
@@ -175,10 +159,20 @@ const Users = ({ activeItem, setActiveItem }) => {
           </div>
         </div>
         {/* <div class="modal-dialog modal-dialog-scrollable" id="staticBackdrop"> */}
-        <FeeDialog feeByMonth={feeByMonth} />
+        {studentDetail?.firstName && (
+          <FeeDialog
+            feeByMonth={studentDetail}
+            setStudentDetail={setStudentDetail}
+            changeHandler={feeChangeHandler}
+            feeSubmitHandler={feeSubmitHandler}
+          />
+        )}
 
         {studentDetail?.firstName && (
-          <StudentDialog studentDetail={studentDetail} />
+          <StudentDialog
+            studentDetail={studentDetail}
+            setStudentDetail={setStudentDetail}
+          />
         )}
         <FilterDialog feeByMonth={feeByMonth} />
         {/* </div> */}

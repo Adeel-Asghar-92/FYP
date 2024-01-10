@@ -1,14 +1,17 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./register.css";
-
-function LoginScreen() {
+import axios from "axios";
+import { baseURL } from "../../utils/baseRoute";
+import { useHistory } from "react-router-dom";
+function AdminLoginScreen() {
   // State variables to store form data
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
+  const history = useHistory();
   // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -18,9 +21,19 @@ function LoginScreen() {
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Add your login logic here
-    console.log("Login data submitted:", formData);
-    // You can send this data to your server for authentication
+    axios({
+      method: "post",
+      url: baseURL + "auth/sign-in",
+      data: formData,
+    })
+      .then(({ data }) => {
+        const token = data.data.accessToken;
+        localStorage.setItem("accessToken", token);
+        history.push("/admin/students");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -83,4 +96,4 @@ function LoginScreen() {
   );
 }
 
-export default LoginScreen;
+export default AdminLoginScreen;

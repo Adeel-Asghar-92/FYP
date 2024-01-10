@@ -44,7 +44,7 @@ const NavBar = () => {
               </a>
             </li> */}
           </ul>
-          <h6 className="nav-item text-white me-2 pt-2 px-3">Hello Adeel</h6>
+          <h6 className="nav-item text-white me-2 pt-2 px-3">Welcome</h6>
           <form className="d-flex">
             {/* <input
               className="form-control me-2"

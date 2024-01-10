@@ -4,7 +4,7 @@ import "./register.css";
 import axios from "axios";
 import { baseURL } from "../../utils/baseRoute";
 import { useHistory } from "react-router-dom";
-function AdminLoginScreen() {
+function StudentLoginScreen() {
   // State variables to store form data
   const [formData, setFormData] = useState({
     email: "",
@@ -28,8 +28,9 @@ function AdminLoginScreen() {
     })
       .then(({ data }) => {
         const token = data.data.accessToken;
+        localStorage.setItem("email", formData.email);
         localStorage.setItem("accessToken", token);
-        history.push("/admin/students");
+        history.push("/student/account-book");
       })
       .catch((error) => {
         console.log(error);
@@ -96,4 +97,4 @@ function AdminLoginScreen() {
   );
 }
 
-export default AdminLoginScreen;
+export default StudentLoginScreen;

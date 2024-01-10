@@ -140,9 +140,15 @@ const SideBar = ({ activeItem, setActiveItem }) => {
               <hr className="dropdown-divider" />
             </li> */}
             <li>
-              <a className="dropdown-item" href="#">
+              <button
+                className="dropdown-item"
+                onClick={() => {
+                  localStorage.removeItem("accessToken");
+                  history.push("/admin/login");
+                }}
+              >
                 Sign out
-              </a>
+              </button>
             </li>
           </ul>
         </div>

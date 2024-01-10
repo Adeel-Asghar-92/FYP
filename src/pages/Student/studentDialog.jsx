@@ -2,8 +2,9 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { baseURL } from "../../utils/baseRoute";
-const StudentDialog = ({ studentDetail }) => {
+const StudentDialog = ({ studentDetail, setStudentDetail }) => {
   const [formData, setFormData] = useState({
+    _id: "",
     firstName: "",
     lastName: "",
     email: "",
@@ -30,18 +31,14 @@ const StudentDialog = ({ studentDetail }) => {
   };
 
   const handleSubmit = (e) => {
-    debugger;
     e.preventDefault();
+    debugger;
     axios({
       method: "post",
-      url: baseURL + "auth/sign-up",
+      url: baseURL + `${formData._id ? "auth/updateStudent" : "auth/sign-up"}`,
       data: formData,
     })
-      .then(({ data }) => {
-        const token = data.data.accessToken;
-        // localStorage.setItem("accessToken", token);
-        // history.push("/student/account-book");
-      })
+      .then(({ data }) => {})
       .catch((error) => {
         console.log(error);
       });
@@ -68,6 +65,9 @@ const StudentDialog = ({ studentDetail }) => {
               class="btn-close"
               data-bs-dismiss="modal"
               aria-label="Close"
+              onClick={() => {
+                setStudentDetail({});
+              }}
             ></button>
           </div>
           <form onSubmit={handleSubmit}>
@@ -217,6 +217,9 @@ const StudentDialog = ({ studentDetail }) => {
                 type="button"
                 class="btn btn-secondary"
                 data-bs-dismiss="modal"
+                onClick={() => {
+                  setStudentDetail({});
+                }}
               >
                 Close
               </button>

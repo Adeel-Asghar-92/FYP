@@ -1,5 +1,23 @@
-import React from "react";
-const FilterDialog = ({ feeByMonth }) => {
+import React, { useState } from "react";
+const FilterDialog = ({ handleApplyFilter }) => {
+  const [filterValues, setFilterValues] = useState({
+    grade: "",
+    status: "",
+    month: "",
+  });
+
+  const handleGradeChange = (e) => {
+    setFilterValues({ ...filterValues, grade: e.target.value });
+  };
+
+  const handleStatusChange = (e) => {
+    setFilterValues({ ...filterValues, status: e.target.value });
+  };
+
+  const handleMonthChange = (e) => {
+    setFilterValues({ ...filterValues, month: e.target.value });
+  };
+
   return (
     <div
       class="modal fade"
@@ -23,16 +41,20 @@ const FilterDialog = ({ feeByMonth }) => {
           <div class="modal-body">
             <div className="mt-2">
               <label className="form-label" for="form3Example1n">
-                Select class
+                Select Grade
               </label>
               <select
                 className="form-select"
                 aria-label="Default select example"
+                value={filterValues.grade}
+                onChange={handleGradeChange}
               >
-                <option value="1">All</option>
-                <option value="2">One</option>
-                <option value="3">Two</option>
-                <option value="4">Three</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+                <option value="14">14</option>
+                <option value="15">15</option>
+                <option value="16">16</option>
               </select>
             </div>
             <div className="mt-2">
@@ -42,6 +64,8 @@ const FilterDialog = ({ feeByMonth }) => {
               <select
                 className="form-select"
                 aria-label="Default select example"
+                value={filterValues.status}
+                onChange={handleStatusChange}
               >
                 <option value="1">Paid</option>
                 <option value="2">UnPaid</option>
@@ -55,20 +79,22 @@ const FilterDialog = ({ feeByMonth }) => {
               <select
                 className="form-select"
                 aria-label="Default select example"
+                value={filterValues.month}
+                onChange={handleMonthChange}
               >
-                <option value="all">All</option>
-                <option value="January">January</option>
-                <option value="February">February</option>
-                <option value="March">March</option>
-                <option value="April">April</option>
-                <option value="May">May</option>
-                <option value="June">June</option>
-                <option value="July">July</option>
-                <option value="August">August</option>
-                <option value="September">September</option>
-                <option value="October">October</option>
-                <option value="November">November</option>
-                <option value="December">December</option>
+                <option value="">All</option>
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
               </select>
             </div>
           </div>
@@ -84,6 +110,7 @@ const FilterDialog = ({ feeByMonth }) => {
               type="button"
               class="btn btn-primary"
               data-bs-dismiss="modal"
+              onClick={() => handleApplyFilter(filterValues)}
             >
               Apply filter
             </button>

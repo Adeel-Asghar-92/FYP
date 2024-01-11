@@ -2,7 +2,11 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { baseURL } from "../../utils/baseRoute";
-const StudentDialog = ({ studentDetail, setStudentDetail }) => {
+const StudentDialog = ({
+  studentDetail,
+  setStudentDetail,
+  setIsStudentDialogOpen,
+}) => {
   const [formData, setFormData] = useState({
     _id: "",
     firstName: "",
@@ -67,6 +71,7 @@ const StudentDialog = ({ studentDetail, setStudentDetail }) => {
               aria-label="Close"
               onClick={() => {
                 setStudentDetail({});
+                setIsStudentDialogOpen(false);
               }}
             ></button>
           </div>
@@ -218,6 +223,7 @@ const StudentDialog = ({ studentDetail, setStudentDetail }) => {
                 class="btn btn-secondary"
                 data-bs-dismiss="modal"
                 onClick={() => {
+                  setIsStudentDialogOpen(false);
                   setStudentDetail({});
                 }}
               >

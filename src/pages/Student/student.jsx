@@ -14,6 +14,8 @@ import { baseURL } from "../../utils/baseRoute.js";
 const Users = ({ activeItem, setActiveItem }) => {
   const [studentDetail, setStudentDetail] = useState({});
   const [student, setStudent] = useState([]);
+  const [isStudentDialogOpen, setIsStudentDialogOpen] = useState(false);
+
   const [feeByMonth, setFeeByMonth] = useState([
     { month: "January", fee: 0 },
     { month: "February", fee: 0 },
@@ -94,6 +96,9 @@ const Users = ({ activeItem, setActiveItem }) => {
                 className="btn btn-primary"
                 data-bs-target="#studentBackdrop"
                 data-bs-toggle="modal"
+                onClick={() => {
+                  setIsStudentDialogOpen(true);
+                }}
               >
                 Add Students
               </button>
@@ -138,7 +143,10 @@ const Users = ({ activeItem, setActiveItem }) => {
                           width={24}
                           height={24}
                           data-bs-target="#studentBackdrop"
-                          onClick={() => setStudentDetail(x)}
+                          onClick={() => {
+                            setIsStudentDialogOpen(true);
+                            setStudentDetail(x);
+                          }}
                           data-bs-toggle="modal"
                         />
                         <img
@@ -146,7 +154,9 @@ const Users = ({ activeItem, setActiveItem }) => {
                           src={FeeIcon}
                           width={24}
                           height={24}
-                          onClick={() => setStudentDetail(x)}
+                          onClick={() => {
+                            setStudentDetail(x);
+                          }}
                           data-bs-target="#feeBackdrop"
                           data-bs-toggle="modal"
                         />
@@ -168,10 +178,11 @@ const Users = ({ activeItem, setActiveItem }) => {
           />
         )}
 
-        {studentDetail?.firstName && (
+        {isStudentDialogOpen && (
           <StudentDialog
             studentDetail={studentDetail}
             setStudentDetail={setStudentDetail}
+            setIsStudentDialogOpen={setIsStudentDialogOpen}
           />
         )}
         <FilterDialog feeByMonth={feeByMonth} />

@@ -4,9 +4,22 @@ import Printer from "../../images/printer.png";
 import NavBar from "../../components/NavBar/navbar";
 import axios from "axios";
 import { baseURL } from "../../utils/baseRoute";
+import VoucherPage from "./voucherTemplate";
 const AccountBook = () => {
   const [fees, setFees] = useState([]);
   const [totalBalance, setTotalBalance] = useState(0);
+  const [voucher, setVoucher] = useState({});
+
+  const [isPrinting, setIsPrinting] = React.useState(false);
+
+  const handlePrint = () => {
+    setIsPrinting(true);
+    setTimeout(() => {
+      window.print();
+      setIsPrinting(false);
+    }, 500); // Delay for rendering before printing
+  };
+
   useEffect(() => {
     axios({
       method: "post",
@@ -41,60 +54,72 @@ const AccountBook = () => {
         console.log(error);
       });
   }, []);
+
   return (
     <>
-      <div className="container-fluid">
-        <div className="row">
-          {/* <div className="col-12 col-md-2 p-0">
+      {isPrinting && <VoucherPage {...voucher} />}
+      {!isPrinting && (
+        <div className="container-fluid">
+          <div className="row">
+            {/* <div className="col-12 col-md-2 p-0">
             <SideBar />
           </div> */}
-          {/* <div className="col-12 col-md-9 mt-3"> */}
-          <NavBar />
-          <div className="col-12 col-md-12 mt-3">
-            <h2>AccountBook</h2>
-            <div className="table-responsive">
-              <table className="table table-bordered table-hover">
-                <thead className="table-secondary border-white">
-                  <tr>
-                    <th scope="col">Voucher No.</th>
-                    <th scope="col">Payable</th>
-                    <th scope="col">Paid</th>
-                    <th scope="col">Balance</th>
-                    <th scope="col">Date</th>
-                    <th scope="col">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {fees.map((x) => (
-                    <tr className="align-middle">
-                      <th scope="row">{x.voucherId}</th>
-                      <td>{Number(x.payableAmount) - Number(x.discount)}</td>
-                      <td>{x.paidAmount}</td>
-                      <td>
-                        {Number(x.payableAmount) -
-                          Number(x.discount) -
-                          Number(x.paidAmount)}
-                      </td>
-                      <td>
-                        <p>Due Date:{x.dueDate.slice(0, 10)} </p>
-                        <p>Paid Date:{x?.paidDate?.slice(0, 10)}</p>
-                      </td>
-                      <td className="text-center">
-                        <img src={Printer} width={30} height={30} />
-                      </td>
+            {/* <div className="col-12 col-md-9 mt-3"> */}
+            <NavBar />
+            <div className="col-12 col-md-12 mt-3">
+              <h2>AccountBook</h2>
+              <div className="table-responsive">
+                <table className="table table-bordered table-hover">
+                  <thead className="table-secondary border-white">
+                    <tr>
+                      <th scope="col">Voucher No.</th>
+                      <th scope="col">Payable</th>
+                      <th scope="col">Paid</th>
+                      <th scope="col">Balance</th>
+                      <th scope="col">Date</th>
+                      <th scope="col">Action</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-              <h6>
-                {" "}
-                Total Payable Amount:{" "}
-                <span className="text-primary">{totalBalance}</span>
-              </h6>
+                  </thead>
+                  <tbody>
+                    {fees.map((x) => (
+                      <tr className="align-middle">
+                        <th scope="row">{x.voucherId}</th>
+                        <td>{Number(x.payableAmount) - Number(x.discount)}</td>
+                        <td>{x.paidAmount}</td>
+                        <td>
+                          {Number(x.payableAmount) -
+                            Number(x.discount) -
+                            Number(x.paidAmount)}
+                        </td>
+                        <td>
+                          <p>Due Date:{x.dueDate.slice(0, 10)} </p>
+                          <p>Paid Date:{x?.paidDate?.slice(0, 10)}</p>
+                        </td>
+                        <td className="text-center">
+                          <img
+                            src={Printer}
+                            width={30}
+                            height={30}
+                            onClick={() => {
+                              setVoucher(x);
+                              handlePrint();
+                            }}
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <h6>
+                  {" "}
+                  Total Payable Amount:{" "}
+                  <span className="text-primary">{totalBalance}</span>
+                </h6>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 };
